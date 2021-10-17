@@ -11,15 +11,17 @@ import { GcTranslateModule } from './gc-translate/gc-translate.module';
 
 @Module({
   imports: [
-    SequelizeModule.forRoot({
-      dialect: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'test',
-      models: [Product],
-      synchronize: true,
+    SequelizeModule.forRootAsync({
+      useFactory: () => ({
+        dialect: 'postgres',
+        host: process.env.DB_HOST,
+        port: parseInt(process.env.DB_PORT, 5432),
+        username: process.env.DB_USER,
+        password: process.env.DB_PW,
+        database: process.env.POSTGRES_DB,
+        models: [Product],
+        synchronize: true,
+      }),
     }),
     ProductsModule,
     CurrencyCalculatorModule,

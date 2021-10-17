@@ -1,0 +1,4 @@
+CREATE USER postgres;
+
+CREATE DATABASE test;
+GRANT ALL PRIVILEGES ON DATABASE test TO postgres;
