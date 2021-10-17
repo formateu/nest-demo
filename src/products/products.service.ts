@@ -13,7 +13,7 @@ export class ProductsService {
     productModel.sync({ alter: true }); // altering is not production safe !!
   }
 
-  insertProduct(title: string, desc: string, price: number) {
+  insertProduct(title: string, desc: string, price: number): string {
     const prodId = uuidv4().toString();
     // create = build + save
     const newProduct = this.productModel.create({
@@ -30,7 +30,7 @@ export class ProductsService {
     return this.productModel.findAll();
   }
 
-  async getSingleProduct(productId: string) {
+  async getSingleProduct(productId: string): Promise<Product> {
     return this.productModel.findOne({
       where: {
         id: productId,
@@ -43,20 +43,14 @@ export class ProductsService {
     title: string,
     desc: string,
     price: number,
-  ) {
+  ): Promise<void> {
     const product = await this.getSingleProduct(productId);
-    if (title) {
-      product.title = title;
-    }
-
-    if (desc) {
-      product.description = desc;
-    }
-
-    if (price) {
-      product.price = price;
-    }
-
+    const newProduct = {
+      id: productId ? productId : product.id,
+      title: title ? title : product.title,
+      description: desc ? desc : product.description,
+      price: price ? price : product.price,
+    };
     await product.save();
   }
 

@@ -27,7 +27,7 @@ export class ProductsController {
     @Body('title') prodTitle: string,
     @Body('description') prodDesc: string,
     @Body('price') prodPrice: number,
-  ): any {
+  ): { id: string } {
     const genId = this.productsService.insertProduct(
       prodTitle,
       prodDesc,
@@ -37,12 +37,12 @@ export class ProductsController {
   }
 
   @Get()
-  getAllProducts() {
+  getAllProducts(): Promise<Product[]> {
     return this.productsService.getProducts();
   }
 
   @Get(':id')
-  getProduct(@Param('id') prodId: string) {
+  getProduct(@Param('id') prodId: string): Promise<Product> {
     return this.productsService.getSingleProduct(prodId);
   }
 
@@ -50,13 +50,16 @@ export class ProductsController {
   getProductPriceInCurrency(
     @Param('id') id: string,
     @Param('currency') currency: string,
-  ): Observable<number> {
+  ): Observable<{ price: number; currency: string }> {
     return forkJoin({
       rate: this.currCalcService.getCurrencyRate(currency),
       product: this.productsService.getSingleProduct(id),
     }).pipe(
       map(({ product, rate }) => {
-        return product.price / rate;
+        return {
+          price: product.price / rate,
+          currency: currency,
+        };
       }),
     );
   }
@@ -82,9 +85,8 @@ export class ProductsController {
     @Body('title') prodTitle: string,
     @Body('description') prodDesc: string,
     @Body('price') prodPrice: number,
-  ) {
+  ): void {
     this.productsService.updateProduct(prodId, prodTitle, prodDesc, prodPrice);
-    return null;
   }
 
   @Delete(':id')

@@ -9,7 +9,7 @@ import { map } from 'rxjs';
 export class CurrencyCalculatorService {
   constructor(private httpService: HttpService) {}
 
-  getCurrencyRate(currency: string): Observable<any> {
+  getCurrencyRate(currency: string): Observable<number> {
     const nbpUrl = `http://api.nbp.pl/api/exchangerates/rates/a/${currency}/`;
     console.log(nbpUrl);
     return this.httpService.get(nbpUrl).pipe(
