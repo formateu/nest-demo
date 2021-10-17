@@ -10,14 +10,16 @@ import {
 import { ProductsService } from './products.service';
 import { CurrencyCalculatorService } from 'src/currency-calculator/currency-calculator.service';
 import { CurrencyCalculatorModule } from 'src/currency-calculator/currency-calculator.module';
-import { map, forkJoin, Observable } from 'rxjs';
+import { from, mergeMap, forkJoin, Observable, map } from 'rxjs';
 import { Product } from './product.model';
+import { GcTranslateService } from 'src/gc-translate/gc-translate.service';
 
 @Controller('products')
 export class ProductsController {
   constructor(
     private readonly productsService: ProductsService,
     private readonly currCalcService: CurrencyCalculatorService,
+    private readonly gcTranslateService: GcTranslateService,
   ) {}
 
   @Post()
@@ -55,6 +57,21 @@ export class ProductsController {
     }).pipe(
       map(({ product, rate }) => {
         return product.price / rate;
+      }),
+    );
+  }
+
+  @Get('translatedDescription/:id/:targetLanguage')
+  getTranslatedDescription(
+    @Param('id') id: string,
+    @Param('targetLanguage') targetLanguage: string,
+  ): Observable<string> {
+    return from(this.productsService.getSingleProduct(id)).pipe(
+      mergeMap((product) => {
+        return this.gcTranslateService.translate(
+          product.description,
+          targetLanguage,
+        );
       }),
     );
   }
