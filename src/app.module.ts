@@ -7,6 +7,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { Product } from './products/product.model';
 import { CurrencyCalculatorModule } from './currency-calculator/currency-calculator.module';
+import { GcTranslateModule } from './gc-translate/gc-translate.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CurrencyCalculatorModule } from './currency-calculator/currency-calcula
     }),
     ProductsModule,
     CurrencyCalculatorModule,
+    GcTranslateModule,
   ],
   controllers: [AppController],
   providers: [AppService],

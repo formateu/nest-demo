@@ -11,9 +11,9 @@ import { HttpModule } from '@nestjs/axios';
   imports: [
     SequelizeModule.forFeature([Product]),
     CurrencyCalculatorModule, // <- isn't this an overkill? (Separate module for 1 httpservice handle)
-    HttpModule
+    HttpModule,
   ],
   controllers: [ProductsController],
   providers: [CurrencyCalculatorService, ProductsService],
 })
-export class ProductsModule { }
+export class ProductsModule {}
