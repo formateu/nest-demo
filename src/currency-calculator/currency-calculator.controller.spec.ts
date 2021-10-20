@@ -6,7 +6,7 @@ import { HttpModule } from '@nestjs/axios';
 
 describe('CurrencyCalculatorController', () => {
   let controller: CurrencyCalculatorController;
-  let ccservice = CurrencyCalculatorService;
+  let ccservice: CurrencyCalculatorService;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -15,6 +15,7 @@ describe('CurrencyCalculatorController', () => {
       imports: [HttpModule],
     }).compile();
 
+    ccservice = app.get<CurrencyCalculatorService>(CurrencyCalculatorService);
     controller = app.get<CurrencyCalculatorController>(
       CurrencyCalculatorController,
     );
@@ -24,9 +25,7 @@ describe('CurrencyCalculatorController', () => {
     it('Should return current PLN to given currency rate"', () => {
       const mockCurrency = 'usd';
       const result = of(3);
-      jest
-        .spyOn(ccservice, 'getCurrencyRate')
-        .mockImplementation((_: string) => result);
+      jest.spyOn(ccservice, 'getCurrencyRate').mockImplementation(() => result);
       expect(controller.getCurrencyRate(mockCurrency)).toBe(result);
     });
   });
